@@ -1,0 +1,4 @@
+REMARK   1 CREATED WITH OPENMM 8.1, 2024-04-16
+HETATM    1 Na1x ion A   1       0.000   0.000   0.000  1.00  0.00          Na  
+TER       2      ion A   1
+END

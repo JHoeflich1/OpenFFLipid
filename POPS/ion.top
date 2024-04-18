@@ -1,0 +1,43 @@
+[ defaults ]
+; nbfunc	comb-rule	gen-pairs	fudgeLJ	fudgeQQ
+     1	     2	yes   	0.500000	0.833333
+
+[ atomtypes ]
+;type, bondingtype, atomic_number, mass, charge, ptype, sigma, epsilon
+ion_0      	    11	22.989769282	0.0000000000000000	A    	0.2439280690268249	0.3658460312
+
+[ moleculetype ]
+ion	         3
+
+[ atoms ]
+;index, atom type, resnum, resname, name, cgnr, charge, mass
+     1 ion_0        1 ion      Na1x       1      1.000000000000     22.989769282000
+
+[ pairs ]
+;ai    aj   funct
+
+[ bonds ]
+;ai    aj   funct r k
+
+[ angles ]
+;ai    aj   ak   funct theta  k
+
+[ dihedrals ]
+;ai    aj   ak   al   funct phi  k
+
+[ settles ]
+;i  funct   dOH  dHH
+
+
+[ exclusions ]
+;ai    aj
+
+
+[ system ]
+;name
+FOO
+
+[ molecules ]
+;name	number
+ion	1
+
