@@ -1,0 +1,10 @@
+tolerance 2.0
+
+filetype pdb
+
+output heptane_4096.pdb
+
+structure heptane.pdb
+  number 4096
+  inside box 0. 0. 0. 350. 350. 350.
+end structure

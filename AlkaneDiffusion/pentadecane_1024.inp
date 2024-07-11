@@ -1,0 +1,10 @@
+tolerance 2.0
+
+filetype pdb
+
+output pentadecane_1024.pdb
+
+structure pentadecane.pdb
+  number 1024
+  inside box 0. 0. 0. 180. 180. 180.
+end structure
