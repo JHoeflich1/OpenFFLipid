@@ -1,44 +1,53 @@
-import os
 import numpy as np
-import pdb
-import subprocess
+import pandas as pd
+import os
 
-molecules = {6:'hexane', 7:'heptane'}
-num_molecules = [512, 1024]
-tlen = 2001 #trajectory length
+molecules = {6:'hexane',7:'heptane',8:'octane',10:'decane',15:'pentadecane'}
+sizes = [512,1024, 2048, 4096]
+tlen = 5  # trajectory length
 
-msd_dict = {}
+# store dataframes for each moelecule/ size combination
+dfs = []
 
+for mol_key, mol_name in molecules.items():
+    for size in sizes:
+        index = pd.MultiIndex.from_product(
+            [[mol_name], [size], range(size)],
+            names=['molecule', 'sizes', 'particle']
+        )
+        columns = range(tlen)
+        df = pd.DataFrame(np.zeros((len(index), tlen)), index=index, columns=columns)
+        dfs.append(df)
+
+# concat to a single dataframe
+msd_df = pd.concat(dfs)
+
+# print(msd_df)
+
+# populate df with msd 
 for key, mol in molecules.items():
-    msd_dict[mol] = {}
-    for num in num_molecules:
-        msd_dict[mol][num] = np.zeros([num, tlen])
+    for num in sizes:
+        for i in range(num):
+            # Create index file per particle
+            with open(f"ndxs_{mol}_{num}_{i}.ndx", "w") as f:
+                f.write(f"[ p{i} ]\n")
+                n0 = key * i
+                f.write(f"{n0}")
 
-for num in num_molecules:
-  for key, mol in molecules.items():
-    for i in range(num):
-      msds = np.zeros([num,tlen])
+            # Run gmx msd with each index file
+            command = f"gmx msd -f nvt_{mol}_{num}.xtc -s nvt_{mol}_{num}.tpr -o msds/msd_{mol}_{num}_{i}.xvg -n ndxs_{mol}_{num}_{i}.ndx"
+            os.system(command)
 
-      f = open(f"ndxs_{mol}_{num}_{i}.ndx","w")
-      f.write(f"[ p{i} ]\n")
-      n0 = key * i + 1
-      f.write(f"{n0}")
-      f.close()
+            # Read the MSD values from the output file
+            with open(f"msds/msd_{mol}_{num}_{i}.xvg") as f:
+                lines = f.readlines()
+            
+            itv = 0
+            for l in lines:
+                if l[0] != '#' and l[0] != '@':
+                    vals = l.split()
+                    msd_df.loc[(mol, num, i), itv] = float(vals[1])
+                    itv += 1
 
-
-      #run gmx msd with each index file
-      command = f"gmx msd -f nvt_{mol}_{num}.xtc -s nvt_{mol}_{num}.tpr -o msds/msd_{mol}_{num}_{i}.xvg -n ndxs_{mol}_{num}_{i}.ndx")
-      os.system(command)
-
-      # now read the index file
-      f = open(f"msds/msd_{mol}_{num}_{i}.xvg")
-      lines = f.readlines()
-      f.close()
-      
-      itv = 0
-      for l in lines:
-        if l[0] !='#' and l[0] != '@':
-          vals = l.split()
-          msd_dict[mol][num][i,itv] = float(vals[1])
-          itv+=1
-np.savez("msd_data.npz", **msd_dict)
+# Save the DataFrame to a file
+msd_df.to_pickle("msd_data.pkl")
