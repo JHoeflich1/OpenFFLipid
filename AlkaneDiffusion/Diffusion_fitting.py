@@ -6,59 +6,56 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.optimize import minimize
+from scipy.optimize import curve_fit
 
+# Load your Ds_df from pickle file
 Ds_df = pd.read_pickle("DS_final.pkl")
 
-molecules = ['TIP3P','hexane', 'heptane', 'octane', 'decane', 'pentadecane']
-sizes = [512, 1024, 2048, 4096]  #These need to be changed to size of the boxes is nm
+molecules = ['TIP3P', 'hexane', 'heptane', 'octane', 'decane', 'pentadecane']
+sizes = {0:512, 0:1024, 0:2048, 0:4096}  # change to a dictionary for box sizes 
 
-# for molecule in molecules:
-#     for size in sizes:
-#         matrix = msd_df.loc[(molecule, size)]
-#         DS = matrix[0]
-#         Sterr = matrix[1]
-#         print(f"Molecule: {molecule}, Size: {size}, DS: {DS}, Stderr: {Stderr}")
-
-def model(params, x): # where x is 1/L
-    A, D_inf = params
+def model(x, A, D_inf):
     return A * x + D_inf
 
-def weighted_residuals(params, x, y, weights):
-    return (y - model(params, x)) / weights
+fit_results = {}
 
-fig, axs = plt.subplots(len(molecules), 1, figsize=(8, 6), sharex=True)
+for molecule in molecules:
+    Size_data = []
+    DS_data = []
+    DS_data_err = []
+    
+    # get data for the current molecule and sizes
+    for box_size, mol_size in sizes.items():
+        matrix = Ds_df.loc[(molecule, mol_size)]
+        Size_data.append(box_size)
+        DS_data.append(matrix['DS'])
+        DS_data_err.append(matrix['Stderr'])
+        print(f"Molecule: {molecule}, Size: {box_size}, DS: {matrix['DS']}, Stderr: {matrix['Stderr']}")
 
-for i, molecule in enumerate(molecules):
-    ax = axs[i]
-    for size in sizes:
-        matrix = Ds_df.loc[(molecule, size)]
-        DS = matrix['Ds']
-        Stderr = matrix['Stderr']
-        L_inverse = 1 / size  # Assuming size corresponds to 1/L
+    
+    # Perform curve fitting for the current molecule
+    x_data = np.array(Size_data)
+    y_data = np.array(DS_data)
+    y_err = np.array(DS_data_err)
+    
+    initial_guess = [1.0, 0.0]  # Initial guess for parameters A and D_inf
+    
+    params, covariance = curve_fit(model, 1 / x_data, y_data, sigma=y_err, p0=initial_guess, absolute_sigma=True)
+    perr = np.sqrt(np.diag(covariance))
+    print(f"Standard errors in parameters for {molecule}: {perr}")
+    
+    fit_results[molecule] = {'params': params,'covariance': covariance}
+    
+    # plot
+    plt.errorbar(x_data, y_data, yerr=y_err, label=f'{molecule} Data')
+    x_fit = np.linspace(min(x_data), max(x_data), 100)
+    y_fit = model(1.0 / x_fit, *params)
+    plt.plot(x_fit, y_fit, label=f'{molecule} Fit')
+    plt.xlabel('Size (nm)')
+    plt.ylabel('DS')
+    plt.legend()
+    plt.savefig('')
 
-        # plot DS with error bars
-        ax.errorbar(L_inverse, DS, yerr=Stderr, fmt='o', label=f'Size {size}')
-
-        # Perform weighted least squares fitting
-        weights = 1 / Stderr**2
-        initial_params = np.array([1.0, 0.0])  # Initial guess for A and D_inf
-        result = minimize(fun=lambda params: np.sum(weighted_residuals(params, L_inverse, DS, weights)**2),
-                          x0=initial_params)
-
-        fitted_params = result.x
-        A_fit, D_inf_fit = fitted_params
-
-        # Plot the fitted line
-        x_fit = np.linspace(min(L_inverse), max(L_inverse), 100)
-        y_fit = model(fitted_params, x_fit)
-        ax.plot(x_fit, y_fit, label=f'Fit: D_inf = {D_inf_fit:.2f}', linestyle='--')
-
-    ax.set_title(f'Molecule: {molecule}')
-    ax.set_xlabel('1/L')
-    ax.set_ylabel('DS')
-    ax.legend()
-
-plt.tight_layout()
-plt.show()
-
+# Print fitted parameters and covariance for each molecule
+for molecule, result in fit_results.items():
+    print(f"Molecule: {molecule}, Parameters (A, D_inf): {result['params']}, Covariance: {result['covariance']}")
