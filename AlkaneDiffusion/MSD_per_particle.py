@@ -31,7 +31,7 @@ for key, mol in molecules.items():
             # Create index file per particle
             with open(f"ndxs_{mol}_{num}_{i}.ndx", "w") as f:
                 f.write(f"[ p{i} ]\n")
-                n0 = key * i
+                n0 = key * i + 1
                 f.write(f"{n0}")
 
             # Run gmx msd with each index file
