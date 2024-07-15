@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import os
 
-molecules = {6:'hexane',7:'heptane',8:'octane',10:'decane',15:'pentadecane'}
+molecules = {3: 'TIP3P', 6:'hexane',7:'heptane',8:'octane',10:'decane',15:'pentadecane'}
 sizes = [512,1024, 2048, 4096]
 tlen = 5  # trajectory length
 

@@ -19,7 +19,7 @@ msd_df = pd.read_pickle("msd_data.pkl")
 # print(msd_df.head())
 
 ##### make an empty dataframe to store calcualted Ds and Sterr values 
-molecules = ['hexane', 'heptane', 'octane', 'decane', 'pentadecane']
+molecules = ['TIP3P','hexane', 'heptane', 'octane', 'decane', 'pentadecane']
 sizes = [512, 1024, 2048, 4096]
 
 index = pd.MultiIndex.from_product([molecules, sizes], names=['Molecule', 'Size'])
