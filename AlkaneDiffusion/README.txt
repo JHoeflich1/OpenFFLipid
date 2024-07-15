@@ -13,5 +13,6 @@ Pipeline:
 6. Run runAlkances_nvt.py to create .sh run scripts
     submit .sh with " for script in *nvt_1.sh; do sbatch "$script"; done " to run NVT
 7. Run MSD_per_particle.py for each molecule size and each moelcule. Will need to adjust for all molecules 
-8. Run Diffusion_fitting.py to calcaulte and plot the diffusion coefficients 
+8. Run Bootstrapping_diffusion to get the average Ds and Sterr (computed from bootstrapping)
+8. Run Diffusion_fitting.py to calcaulte and plot the diffusion coefficients for different box sizes
 9. Create folders for each moelcule and separate files into their molecules 
