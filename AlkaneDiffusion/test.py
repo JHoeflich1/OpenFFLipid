@@ -1,17 +1,17 @@
+import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
-molecules = {6:'hexane', 7:'heptane'}
-num_molecules = [512, 1024]
-tlen = 2001 #trajectory length
-n = 3 #number of atoms in your molecule
+import pandas as pd
 
-msd_dict = {}
+molecules = ['hexane', 'heptane', 'octane', 'decane', 'pentadecane']
+sizes = [512, 1024, 2048, 4096]
 
-for key, value in molecules.items():
-    msd_dict[value] = {}
-    for num in num_molecules:
-        msd_dict[value][num] = np.zeros([num, tlen])
+# Create a multiindex df from product of molecules and sizes
+index = pd.MultiIndex.from_product([molecules, sizes], names=['Molecule', 'Size'])
 
-for molecule, sizes in msd_dict.items():
-    for size, msd_array in sizes.items():
-        print(f"Molecule: {molecule}, Size: {size}, Shape: {msd_array.shape}")
+# Create an empty df with the specified index
+data = {'Ds': 0, 'Stderr': 0}  
+df = pd.DataFrame(data, index=index)
+
+print(df)

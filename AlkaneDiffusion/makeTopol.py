@@ -1,6 +1,6 @@
 import os
 
-# Molecules and their respective sizes
+# Molecules and their respective sizes #TIP3P topology came from old simuations
 molecules = ['hexane', 'heptane', 'octane', 'decane', 'pentadecane']
 sizes = [512, 1024, 2048, 4096]
 
