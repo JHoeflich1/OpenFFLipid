@@ -1,14 +1,14 @@
-integrator = md
-dt = 0.002
-nsteps = 500000 ; 1000  ps / 1 ns
+integrator = sd
+dt = 0.004
+nsteps = 500000 ; 2000  ps / 2 ns
 
 continuation = no
 constraints = h-bonds
 constraint-algorithm = lincs
 
 cutoff-scheme = Verlet
-nstxout = 500000
-nstvout = 500000
+nstxout = 50000
+nstvout = 50000
 nstfout = 0
 nstxout-compressed = 5000 ; 10 ps 
 
@@ -35,10 +35,11 @@ tau-t = 0.1
 ref-t = 300.0
 
 Pcoupl = c-rescale
-Pcoupltype = semiisotropic #change to isotropic for pressure coupling in x,y,z direction
-tau-p = 10 			;(modified* from 4)
-ref-p = 1 1
-compressibility = 4.5e-5 4.5e-5
+Pcoupltype = isotropic ; isotropic for pressure coupling in x,y,z direction
+tau-p = 1 			
+ref-p = 1
+compressibility = 4.5e-5
+nstpcouple = 100 ; default value, frequency for coupling the pressure, box is scaled every # of steps.  
 
 gen-vel = yes
 gen-temp = 300.0

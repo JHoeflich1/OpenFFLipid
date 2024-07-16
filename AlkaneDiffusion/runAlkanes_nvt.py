@@ -1,8 +1,8 @@
 import subprocess
 
 # Define the molecule sizes
-sizes = [512, 1024, 2048, 4096]
-molecules = ['TIP3P','hexane','heptane','octane','decane','pentadecane']
+sizes = [512, 1024, 2048]
+molecules = ['pentane','hexane','heptane','octane','decane','pentadecane']
 
 # SLURM job template
 job_template = """#!/bin/bash

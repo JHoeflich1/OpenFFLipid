@@ -4,11 +4,11 @@ Hexane,Heptane,Octane,Decane,Pentadecane @ 300K
 
 
 Pipeline:
-1. Run makeAlkanes.ipynb to create alkanes and parameterize with interchange 
-2. Run packAlkanes.py to pack in Packmol and create box coordinate system
-3. Run makeTopol.py to create a topology with the correct number of molecules in the box
-4. Run runAlkanes_npt.py to create .sh run scripts for each simulation in RC account 
-    submit .sh with " for script in *.sh; do sbatch "$script"; done " to run NPT
+1. Run buildAlkane.py to create alkanes from smiles string, pack using openFF packmol toolkit, parameterize with interchange + use HMR
+2. Run runAlkanes_equil.py to create .sh run scripts for each simulation in RC account 
+    submit .sh with " for script in *equil1.sh; do sbatch "$script"; done " to run NPT
+
+
 5. Run ChangeBoxSize.py to modify the box sizes to the total average in NPT before NVT
 6. Run runAlkances_nvt.py to create .sh run scripts
     submit .sh with " for script in *nvt_1.sh; do sbatch "$script"; done " to run NVT

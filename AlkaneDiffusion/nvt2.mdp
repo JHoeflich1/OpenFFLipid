@@ -1,4 +1,4 @@
-integrator = md
+integrator = sd
 dt = 0.004
 nsteps = 1250000 ; 5000 ps / 5 ns
 
@@ -7,8 +7,8 @@ constraints = h-bonds
 constraint-algorithm = lincs
 
 cutoff-scheme = Verlet
-nstxout = 500000 		;(modified* from 0)
-nstvout = 500000 		;(modified* from 0)
+nstxout = 5000 		;(modified* from 0)
+nstvout = 5000 		;(modified* from 0)
 nstfout = 0
 ;nstxout-compressed = 5000 ; 10 ps
 

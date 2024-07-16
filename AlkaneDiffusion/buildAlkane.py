@@ -75,4 +75,4 @@ for name, alkane in alkanes.items():
                  box = cubic_box,
                  charge_from_molecules=[alkane]
             )
-            packed_interchange.to_gromacs(f"{name}_{size}_packed", hydrogen_mass=3)
+            packed_interchange.to_gromacs(f"{name}_{size}", hydrogen_mass=3)
