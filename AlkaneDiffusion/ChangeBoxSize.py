@@ -1,6 +1,6 @@
-#This script is used after min and npt scripts are run on gromacs, prior to running nvt.
+#This script is used after min, nvt and npt equilibration scripts are run on gromacs, prior to running nvt production.
 #
-#Input is the nvt.xtc, .tpr file used to calculate the average volume of the box
+#Input is the nvt1_{}_{}.xtc, .tpr file used to calculate the average volume of the box
 #Then the npt.gro file is modified to account for the new calcualted volume of the box/box dimensions 
 #
 
@@ -8,37 +8,51 @@ import os
 import numpy as np
 import pdb
 import subprocess
+from matplotlib.pyplot import plt
 
-sizes = [512, 1024, 2048, 4096]
-molecules = ['TIP3P','hexane','heptane','octane','decane','pentadecane']
-length_b = 5000  #before running, check how long you run npt for and only average last part of simulation for the average. 
-length_e = 10000  # the npt simulation was run for 10 ns, average last 5 nm, probably dont need to run that long next time
-
+sizes = [512, 1024, 2048]
+molecules = ['pentane','hexane','heptane','octane','decane','pentadecane', 'water']
+# all simulations were run for 2 ns of NPT. You only want to average box size after it has relaxed. For each simulation, plot the total volume over the full trajectory 
 for molecule in molecules:
     for size in sizes:
+        command_V = f"echo 18 | gmx energy -f npt1_{molecule}_{size}.edr -o {molecule}_{size}_V.xvg"
+        subprocess.run(command_V, shell=True, check=True)
 
-        #Note that 
-        #Note that npt was run semiisotropic (if you repeat simulation change npt pressure coupling to isotropic), so 
-        # you need dimensions in x and z. If isotropic you can switch to total volume fluctuations and extract box size there
-        command_x = f"echo 18 | gmx energy -f npt_{molecule}_{size}.edr -b {length_b} -e {length_e} -o {molecule}_{size}_x.xvg"
-        subprocess.run(command_x, shell=True, check=True)
+        #plot volume 
+        V_len = np.loadtxt(f'{molecule}_{size}_V.xvg', comments=['#','@'])
+        V_ps = V_len[:,0]
+        V_nm3 = V_len[:,1]
 
-        command_z = f"echo 20 | gmx energy -f npt_{molecule}_{size}.edr -b {length_b} -e {length_e} -o {molecule}_{size}_z.xvg"
-        subprocess.run(command_z, shell=True, check=True)
+        plt.figure()
+        plt.plot(V_ps, V_nm3, label=f"{molecule} {size}")
+        plt.xlabel('Time (ps)')
+        plt.ylabel('Volume (nm^3)')
+        plt.title(f'Volume vs Time for {molecule} {size}')
+        plt.legend()
+        plt.savefig(f"{molecule}_{size}.png")
+        plt.close()
 
-        #Calculate the average x and z box lengths over the trajectory
-        x_len = np.loadtxt(f'{molecule}_{size}_x.xvg', comments=['#','@'])
-        x_ps = x_len[:,0]
-        x_nm = x_len[:,1]
-        x= np.mean(x_nm)
-        # print(x)
+#####
+#run above code, determine the time after volume is fully relaxed/equilibrated, and run the rest of the code
 
-        z_len = np.loadtxt(f'{molecule}_{size}_z.xvg', comments=['#','@'])
-        z_ps = z_len[:,0]
-        z_nm = z_len[:,1]
-        z= np.mean(z_nm)
-        #  print(z)
+# length_b = 5000  #before running, check how long you run npt for and only average last part of simulation for the average. 
+# length_e = 10000  # the npt simulation was run for 10 ns, average last 5 nm, probably dont need to run that long next time
 
-        #Use editconf to change the box dimensions of npt.gro file to the average 
-        command = f"gmx editconf -f npt_{molecule}_{size}.gro -box {x} {x} {z} -o npt_box_{molecule}_{size}.gro" 
-        subprocess.run(command, shell=True, check=True)
+# for molecule in molecules:
+#     for size in sizes:
+#         #what gmx command gives volume?
+#         command_V = f"echo 18 | gmx energy -f npt1_{molecule}_{size}.edr -b {length_b} -e {length_e} -o {molecule}_{size}_V.xvg"
+#         subprocess.run(command_V, shell=True, check=True)
+
+#         #From the volume, calculate the length of the box 
+#         V_len = np.loadtxt(f'{molecule}_{size}_V.xvg', comments=['#','@'])
+#         V_ps = V_len[:,0]
+#         V_nm3 = V_len[:,1]
+#         Vavg= np.mean(V_nm3)
+#         x = Vavg**(1/3)
+#         print(x)
+
+
+#         #Use editconf to change the box dimensions of npt.gro file to the average 
+#         command = f"gmx editconf -f npt1_{molecule}_{size}.gro -box {x} {x} {x} -o npt1_box_{molecule}_{size}.gro" 
+#         subprocess.run(command, shell=True, check=True)
