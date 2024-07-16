@@ -5,10 +5,11 @@ nsteps = 1250000 ; 5000 ps / 5 ns
 continuation = no
 constraints = h-bonds
 constraint-algorithm = lincs
+lincs-iter = 2
 
 cutoff-scheme = Verlet
-nstxout = 5000 		;(modified* from 0)
-nstvout = 5000 		;(modified* from 0)
+nstxout = 50000 		;(modified* from 0)
+nstvout = 50000 		;(modified* from 0)
 nstfout = 0
 ;nstxout-compressed = 5000 ; 10 ps
 

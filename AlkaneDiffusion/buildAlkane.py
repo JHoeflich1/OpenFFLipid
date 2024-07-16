@@ -74,7 +74,7 @@ for name, alkane in alkanes.items():
             print(cubic_box_size,f'printing out box size for {name}, {size}')
             cubic_box = unit.Quantity(10 *cubic_box_size* np.eye(3), unit.angstrom) #multiply by 10 to convert nm to angstroms
             try:
-                packed_topol = pack_box(molecules =[alkane], number_of_copies=[size], solute=None, tolerance= 0.5*unit.angstrom, box_vectors = cubic_box)
+                packed_topol = pack_box(molecules =[alkane], number_of_copies=[size], solute=None, tolerance= 2*unit.angstrom, box_vectors = cubic_box)
                 packed_interchange = Interchange.from_smirnoff(
                      force_field = ForceField("openff-2.1.0.offxml"),
                      topology= packed_topol,
