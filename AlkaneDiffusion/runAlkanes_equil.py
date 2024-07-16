@@ -2,7 +2,7 @@ import subprocess
 
 # Define the molecule sizes
 sizes = [512, 1024, 2048]
-molecules = ['pentane','hexane','heptane','octane','decane','pentadecane']
+molecules = ['pentane','hexane','heptane','octane','decane','pentadecane','water']
 
 # SLURM job template
 job_template = """#!/bin/bash
@@ -32,8 +32,8 @@ gmx grompp -p {molecule}_{size}.top -f nvt1.mdp -c min_{molecule}_{size}.gro -o 
 gmx mdrun -deffnm nvt1_{molecule}_{size}
 
 # NPT
-gmx grompp -p {molecule}_{size}.top -f npt.mdp -c nvt1_{molecule}_{size}.gro -o npt_{molecule}_{size}.tpr
-gmx mdrun -deffnm npt_{molecule}_{size}
+gmx grompp -p {molecule}_{size}.top -f npt1.mdp -c nvt1_{molecule}_{size}.gro -o npt1_{molecule}_{size}.tpr
+gmx mdrun -deffnm npt1_{molecule}_{size}
 
 """
 

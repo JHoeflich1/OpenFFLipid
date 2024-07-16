@@ -43,7 +43,7 @@ box_sizes = {key: [] for key in densities.keys()}
 # Calculate box sizes for each molecule and size
 for molecule, density in densities.items():
     for size in sizes:
-        box_size = ((size / (density* 6.02e23))*2.5)**(1/3) #multiply density by avogadros number to get molecules/nm^3, and multipy volume by 2.5 to give wiggle room with packing
+        box_size = ((size / (density* 6.02e23))*3)**(1/3) #multiply density by avogadros number to get molecules/nm^3, and multipy volume by 3 to give wiggle room with packing
         box_sizes[molecule].append(round(box_size,2))
 
 for molecule, size_list in box_sizes.items():
@@ -52,7 +52,12 @@ for molecule, size_list in box_sizes.items():
 
 for name, alkane in alkanes.items():
 
-    alkane.generate_conformers()
+    alkane.generate_conformers(n_conformers=1)
+    print(f"{name} conformers: {len(alkane.conformers)}")
+
+    if not alkane.conformers:
+        print(f"Error: No conformers generated for {name}")
+        continue
 
 
     nagl_charge = model.compute_property(alkane, check_domains = True, error_if_unsupported=True)
@@ -66,13 +71,15 @@ for name, alkane in alkanes.items():
 
     for size in sizes:
             cubic_box_size = box_sizes[name][sizes.index(size)]
-            print(cubic_box_size,f'printing out box size for {molecule}, {size}')
+            print(cubic_box_size,f'printing out box size for {name}, {size}')
             cubic_box = unit.Quantity(10 *cubic_box_size* np.eye(3), unit.angstrom) #multiply by 10 to convert nm to angstroms
-            packed_topol = pack_box(molecules =[alkane], number_of_copies=[size], solute=None, tolerance= 0.5*unit.angstrom, box_vectors = cubic_box)
-            packed_interchange = Interchange.from_smirnoff(
-                 force_field = ForceField("openff-2.1.0.offxml"),
-                 topology= packed_topol,
-                 box = cubic_box,
-                 charge_from_molecules=[alkane]
-            )
-            packed_interchange.to_gromacs(f"{name}_{size}", hydrogen_mass=3)
+            try:
+                packed_topol = pack_box(molecules =[alkane], number_of_copies=[size], solute=None, tolerance= 0.5*unit.angstrom, box_vectors = cubic_box)
+                packed_interchange = Interchange.from_smirnoff(
+                     force_field = ForceField("openff-2.1.0.offxml"),
+                     topology= packed_topol,
+                     box = cubic_box,
+                     charge_from_molecules=[alkane])
+                packed_interchange.to_gromacs(f"{name}_{size}", hydrogen_mass=3)
+            except Exception as e:
+                print(f"Error packing box for {name} with size {size}: {e}")

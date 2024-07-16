@@ -29,9 +29,9 @@ rcoulomb                = 0.9       ; short-range electrostatic cutoff (in nm) 0
 rcoulomb-switch         = 0
 rvdw                    = 0.9       ; short-range van der Waals cutoff (in nm) 0.9 nm for OPENFF
 
-Tcoupl = v-rescale
+tcoupl = no
 tc_grps = system
-tau-t = 0.1
+tau-t = 2
 ref-t = 300.0
 
 gen-vel = yes
