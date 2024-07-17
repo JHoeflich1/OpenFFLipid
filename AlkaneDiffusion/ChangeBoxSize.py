@@ -8,14 +8,14 @@ import os
 import numpy as np
 import pdb
 import subprocess
-from matplotlib.pyplot import plt
+import matplotlib.pyplot as plt
 
 sizes = [512, 1024, 2048]
 molecules = ['pentane','hexane','heptane','octane','decane','pentadecane', 'water']
 # all simulations were run for 2 ns of NPT. You only want to average box size after it has relaxed. For each simulation, plot the total volume over the full trajectory 
 for molecule in molecules:
     for size in sizes:
-        command_V = f"echo 18 | gmx energy -f npt1_{molecule}_{size}.edr -o {molecule}_{size}_V.xvg"
+        command_V = f"echo Volume | gmx energy -f npt1_{molecule}_{size}.edr -o {molecule}_{size}_V.xvg"
         subprocess.run(command_V, shell=True, check=True)
 
         #plot volume 
