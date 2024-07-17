@@ -1,0 +1,307 @@
+                      :-) GROMACS - gmx grompp, 2022.4 (-:
+
+Executable:   /curc/sw/install/gromacs/2022.4/openmpi/4.1.1/gcc/11.2.0/bin/gmx
+Data prefix:  /curc/sw/install/gromacs/2022.4/openmpi/4.1.1/gcc/11.2.0
+Working dir:  /projects/juho8819/AlkaneDiffusion
+Command line:
+  gmx grompp -p water_1024.top -f min.mdp -c water_1024.gro -o min_water_1024.tpr
+
+
+NOTE 1 [file min.mdp]:
+  You have set rlist larger than the interaction cut-off, but you also have
+  verlet-buffer-tolerance > 0. Will set rlist using verlet-buffer-tolerance.
+
+Generating 1-4 interactions: fudge = 0.5
+Number of degrees of freedom in T-Coupling group rest is 6141.00
+
+NOTE 2 [file min.mdp]:
+  The optimal PME mesh load for parallel simulations is below 0.5
+  and for highly parallel simulations between 0.25 and 0.33,
+  for higher performance, increase the cut-off and the PME grid spacing.
+
+
+
+There were 2 notes
+
+GROMACS reminds you: "It's just B I O L O G Y, can't you see?" (Joe Jackson)
+
+Setting the LD random seed to 1341052767
+
+Generated 6 of the 6 non-bonded parameter combinations
+
+Generated 6 of the 6 1-4 parameter combinations
+
+Excluding 3 bonded neighbours molecule type 'TIP'
+Analysing residue names:
+There are:  1024      Water residues
+
+The largest distance between excluded atoms is 0.154 nm
+Calculating fourier grid dimensions for X Y Z
+Using a fourier grid of 40x40x40, spacing 0.113 0.113 0.113
+
+Estimate for the relative computational load of the PME mesh part: 0.59
+
+This run will generate roughly 0 Mb of data
+                      :-) GROMACS - gmx mdrun, 2022.4 (-:
+
+Executable:   /curc/sw/install/gromacs/2022.4/openmpi/4.1.1/gcc/11.2.0/bin/gmx
+Data prefix:  /curc/sw/install/gromacs/2022.4/openmpi/4.1.1/gcc/11.2.0
+Working dir:  /projects/juho8819/AlkaneDiffusion
+Command line:
+  gmx mdrun -deffnm min_water_1024
+
+Reading file min_water_1024.tpr, VERSION 2022.4 (single precision)
+Using 1 MPI thread
+
+Non-default thread affinity set, disabling internal thread affinity
+
+Using 16 OpenMP threads 
+
+
+Steepest Descents:
+   Tolerance (Fmax)   =  1.00000e+01
+   Number of steps    =           -1
+
+step 22: One or more water molecules can not be settled.
+Check for bad contacts and/or reduce the timestep if appropriate.
+Wrote pdb files with previous and current coordinates
+
+step 26: One or more water molecules can not be settled.
+Check for bad contacts and/or reduce the timestep if appropriate.
+Wrote pdb files with previous and current coordinates
+
+step 31: One or more water molecules can not be settled.
+Check for bad contacts and/or reduce the timestep if appropriate.
+Wrote pdb files with previous and current coordinates
+
+step 37: One or more water molecules can not be settled.
+Check for bad contacts and/or reduce the timestep if appropriate.
+Wrote pdb files with previous and current coordinates
+
+step 41: One or more water molecules can not be settled.
+Check for bad contacts and/or reduce the timestep if appropriate.
+
+Back Off! I just backed up step41b.pdb to ./#step41b.pdb.1#
+
+Back Off! I just backed up step41c.pdb to ./#step41c.pdb.1#
+Wrote pdb files with previous and current coordinates
+
+step 46: One or more water molecules can not be settled.
+Check for bad contacts and/or reduce the timestep if appropriate.
+Wrote pdb files with previous and current coordinates
+
+step 50: One or more water molecules can not be settled.
+Check for bad contacts and/or reduce the timestep if appropriate.
+Wrote pdb files with previous and current coordinates
+
+step 55: One or more water molecules can not be settled.
+Check for bad contacts and/or reduce the timestep if appropriate.
+Wrote pdb files with previous and current coordinates
+
+step 61: One or more water molecules can not be settled.
+Check for bad contacts and/or reduce the timestep if appropriate.
+Wrote pdb files with previous and current coordinates
+
+step 64: One or more water molecules can not be settled.
+Check for bad contacts and/or reduce the timestep if appropriate.
+Wrote pdb files with previous and current coordinates
+
+step 74: One or more water molecules can not be settled.
+Check for bad contacts and/or reduce the timestep if appropriate.
+Wrote pdb files with previous and current coordinates
+
+step 84: One or more water molecules can not be settled.
+Check for bad contacts and/or reduce the timestep if appropriate.
+
+Back Off! I just backed up step84b.pdb to ./#step84b.pdb.1#
+
+Back Off! I just backed up step84c.pdb to ./#step84c.pdb.1#
+Wrote pdb files with previous and current coordinates
+
+step 99: One or more water molecules can not be settled.
+Check for bad contacts and/or reduce the timestep if appropriate.
+Wrote pdb files with previous and current coordinates
+
+writing lowest energy coordinates.
+
+Steepest Descents converged to Fmax < 10 in 9038 steps
+Potential Energy  = -5.0484676e+04
+Maximum force     =  9.4248838e+00 on atom 1262
+Norm of force     =  1.2099848e+00
+
+GROMACS reminds you: "Dr Pauling, how do you have so many good ideas? Well David, I have a lot of ideas and throw away the bad ones." (Linus Pauling)
+
+                      :-) GROMACS - gmx grompp, 2022.4 (-:
+
+Executable:   /curc/sw/install/gromacs/2022.4/openmpi/4.1.1/gcc/11.2.0/bin/gmx
+Data prefix:  /curc/sw/install/gromacs/2022.4/openmpi/4.1.1/gcc/11.2.0
+Working dir:  /projects/juho8819/AlkaneDiffusion
+Command line:
+  gmx grompp -p water_1024.top -f nvt1.mdp -c min_water_1024.gro -o nvt1_water_1024.tpr
+
+
+NOTE 1 [file nvt1.mdp]:
+  You have set rlist larger than the interaction cut-off, but you also have
+  verlet-buffer-tolerance > 0. Will set rlist using verlet-buffer-tolerance.
+
+Generating 1-4 interactions: fudge = 0.5
+Number of degrees of freedom in T-Coupling group System is 6141.00
+
+NOTE 2 [file nvt1.mdp]:
+  The optimal PME mesh load for parallel simulations is below 0.5
+  and for highly parallel simulations between 0.25 and 0.33,
+  for higher performance, increase the cut-off and the PME grid spacing.
+
+
+
+There were 2 notes
+
+GROMACS reminds you: "Dr Pauling, how do you have so many good ideas? Well David, I have a lot of ideas and throw away the bad ones." (Linus Pauling)
+
+Setting the LD random seed to -6576514
+
+Generated 6 of the 6 non-bonded parameter combinations
+
+Generated 6 of the 6 1-4 parameter combinations
+
+Excluding 3 bonded neighbours molecule type 'TIP'
+
+turning H bonds into constraints...
+
+Setting gen_seed to 2080217845
+
+Velocities were taken from a Maxwell distribution at 300 K
+Analysing residue names:
+There are:  1024      Water residues
+
+The largest distance between excluded atoms is 0.153 nm
+
+Determining Verlet buffer for a tolerance of 0.005 kJ/mol/ps at 300 K
+
+Calculated rlist for 1x1 atom pair-list as 0.978 nm, buffer size 0.078 nm
+
+Set rlist, assuming 4x4 atom pair-list, to 0.907 nm, buffer size 0.007 nm
+
+Note that mdrun will redetermine rlist based on the actual pair-list setup
+Calculating fourier grid dimensions for X Y Z
+Using a fourier grid of 40x40x40, spacing 0.113 0.113 0.113
+
+Estimate for the relative computational load of the PME mesh part: 0.59
+
+This run will generate roughly 6 Mb of data
+                      :-) GROMACS - gmx mdrun, 2022.4 (-:
+
+Executable:   /curc/sw/install/gromacs/2022.4/openmpi/4.1.1/gcc/11.2.0/bin/gmx
+Data prefix:  /curc/sw/install/gromacs/2022.4/openmpi/4.1.1/gcc/11.2.0
+Working dir:  /projects/juho8819/AlkaneDiffusion
+Command line:
+  gmx mdrun -deffnm nvt1_water_1024
+
+Reading file nvt1_water_1024.tpr, VERSION 2022.4 (single precision)
+Changing nstlist from 40 to 100, rlist from 0.907 to 0.972
+
+Using 1 MPI thread
+
+Non-default thread affinity set, disabling internal thread affinity
+
+Using 16 OpenMP threads 
+
+starting mdrun 'FOO'
+1000000 steps,   1000.0 ps.
+
+Writing final coordinates.
+
+               Core t (s)   Wall t (s)        (%)
+       Time:     5064.689      316.550     1600.0
+                 (ns/day)    (hour/ns)
+Performance:      272.943        0.088
+
+GROMACS reminds you: "I Feel a Great Disturbance in the Force" (The Emperor Strikes Back)
+
+                      :-) GROMACS - gmx grompp, 2022.4 (-:
+
+Executable:   /curc/sw/install/gromacs/2022.4/openmpi/4.1.1/gcc/11.2.0/bin/gmx
+Data prefix:  /curc/sw/install/gromacs/2022.4/openmpi/4.1.1/gcc/11.2.0
+Working dir:  /projects/juho8819/AlkaneDiffusion
+Command line:
+  gmx grompp -p water_1024.top -f npt1.mdp -c nvt1_water_1024.gro -o npt1_water_1024.tpr
+
+
+NOTE 1 [file npt1.mdp]:
+  You have set rlist larger than the interaction cut-off, but you also have
+  verlet-buffer-tolerance > 0. Will set rlist using verlet-buffer-tolerance.
+
+Generating 1-4 interactions: fudge = 0.5
+Number of degrees of freedom in T-Coupling group System is 6141.00
+
+NOTE 2 [file npt1.mdp]:
+  The optimal PME mesh load for parallel simulations is below 0.5
+  and for highly parallel simulations between 0.25 and 0.33,
+  for higher performance, increase the cut-off and the PME grid spacing.
+
+
+
+There were 2 notes
+
+GROMACS reminds you: "I Feel a Great Disturbance in the Force" (The Emperor Strikes Back)
+
+Setting the LD random seed to 1865379755
+
+Generated 6 of the 6 non-bonded parameter combinations
+
+Generated 6 of the 6 1-4 parameter combinations
+
+Excluding 3 bonded neighbours molecule type 'TIP'
+
+turning H bonds into constraints...
+
+Setting gen_seed to 564059623
+
+Velocities were taken from a Maxwell distribution at 300 K
+Analysing residue names:
+There are:  1024      Water residues
+
+The largest distance between excluded atoms is 0.153 nm
+
+Determining Verlet buffer for a tolerance of 0.005 kJ/mol/ps at 300 K
+
+Calculated rlist for 1x1 atom pair-list as 0.978 nm, buffer size 0.078 nm
+
+Set rlist, assuming 4x4 atom pair-list, to 0.907 nm, buffer size 0.007 nm
+
+Note that mdrun will redetermine rlist based on the actual pair-list setup
+Calculating fourier grid dimensions for X Y Z
+Using a fourier grid of 40x40x40, spacing 0.113 0.113 0.113
+
+Estimate for the relative computational load of the PME mesh part: 0.59
+
+This run will generate roughly 9 Mb of data
+                      :-) GROMACS - gmx mdrun, 2022.4 (-:
+
+Executable:   /curc/sw/install/gromacs/2022.4/openmpi/4.1.1/gcc/11.2.0/bin/gmx
+Data prefix:  /curc/sw/install/gromacs/2022.4/openmpi/4.1.1/gcc/11.2.0
+Working dir:  /projects/juho8819/AlkaneDiffusion
+Command line:
+  gmx mdrun -deffnm npt1_water_1024
+
+Reading file npt1_water_1024.tpr, VERSION 2022.4 (single precision)
+Changing nstlist from 40 to 100, rlist from 0.907 to 0.972
+
+Using 1 MPI thread
+
+Non-default thread affinity set, disabling internal thread affinity
+
+Using 16 OpenMP threads 
+
+starting mdrun 'FOO'
+1000000 steps,   1000.0 ps.
+
+Writing final coordinates.
+
+               Core t (s)   Wall t (s)        (%)
+       Time:     5544.828      346.555     1600.0
+                 (ns/day)    (hour/ns)
+Performance:      249.311        0.096
+
+GROMACS reminds you: "There's only music to make new ringtones" (Arctic Monkeys)
+
