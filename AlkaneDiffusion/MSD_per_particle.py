@@ -2,10 +2,15 @@ import numpy as np
 import pandas as pd
 import os
 
-molecules = {3: 'TIP3P', 6:'hexane',7:'heptane',8:'octane',10:'decane',15:'pentadecane'}
-sizes = [512,1024, 2048, 4096]
-tlen = 5  # trajectory length
+molecules = {3: 'water', 5:'pentane',6:'hexane',7:'heptane',8:'octane',10:'decane',15:'pentadecane'}
+sizes = [512,1024, 2048]
+tlen = 6000  # trajectory length
 
+
+if not os.path.exists('msds'):
+    os.makedirs('msds')
+
+    
 # store dataframes for each moelecule/ size combination
 dfs = []
 
@@ -19,6 +24,7 @@ for mol_key, mol_name in molecules.items():
         df = pd.DataFrame(np.zeros((len(index), tlen)), index=index, columns=columns)
         dfs.append(df)
 
+# print(dfs)
 # concat to a single dataframe
 msd_df = pd.concat(dfs)
 
@@ -31,13 +37,14 @@ for key, mol in molecules.items():
             # Create index file per particle
             with open(f"ndxs_{mol}_{num}_{i}.ndx", "w") as f:
                 f.write(f"[ p{i} ]\n")
-                n0 = key * i
+                n0 = key * i + 1
                 f.write(f"{n0}")
 
             # Run gmx msd with each index file
-            command = f"gmx msd -f nvt_{mol}_{num}.xtc -s nvt_{mol}_{num}.tpr -o msds/msd_{mol}_{num}_{i}.xvg -n ndxs_{mol}_{num}_{i}.ndx"
+            command = f"echo 0 | gmx msd -f nvt2_{mol}_{num}.xtc -s nvt2_{mol}_{num}.tpr -o msds/msd_{mol}_{num}_{i}.xvg -n ndxs_{mol}_{num}_{i}.ndx -rmpbc -pbc"
             os.system(command)
-
+            # -rmpbc means that molecules are made whole for each frame
+            # -pbc means to se periodic boundary conditions for distance calculation
             # Read the MSD values from the output file
             with open(f"msds/msd_{mol}_{num}_{i}.xvg") as f:
                 lines = f.readlines()
