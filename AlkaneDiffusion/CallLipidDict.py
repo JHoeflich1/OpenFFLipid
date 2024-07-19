@@ -1,7 +1,7 @@
 import pandas as pd
 from rdkit.Chem.rdmolfiles import MolFromSmiles
 import os
-import sys
+import argparse
 
 # read lipid dictionary
 df= pd.read_csv("/Dictionary/LipidDictionary.csv", header=[0, 1] )
@@ -35,9 +35,8 @@ def makeLipidSmiles(Lipid):
         # mol = Molecule.from_rdkit(molecule)
         # mol.generate_conformers()
         # mol.visualize()
-if __name__=='__main__':
-    if len(sys.argv) != 2:
-        print("Usage: python3 makeDict.py <Lipid>")
-        sys.exit(1)
-    Lipid = sys.argv[1]
-    makeLipidSmiles(Lipid)
+
+parser = argparse.ArgumentParser()
+parser. add_argument('-l', '--lipid', type=str, default='POPC', help='Lipid to build, default POPC')
+args = parser.parse_args()
+makeLipidSmiles(args.lipid)
