@@ -75,6 +75,6 @@ for name, moleucle in molecules.items():
                      topology= packed_topol,
                      box = cubic_box,
                      charge_from_molecules=[moleucle])
-                packed_interchange.to_gromacs(f"{name}_{size}")
+                packed_interchange.to_gromacs(f"{name}_{size}", hydrogen_mass=3)
             except Exception as e:
                 print(f"Error packing box for {name} with size {size}: {e}")

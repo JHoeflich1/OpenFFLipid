@@ -80,6 +80,6 @@ for name, alkane in alkanes.items():
                      topology= packed_topol,
                      box = cubic_box,
                      charge_from_molecules=[alkane])
-                packed_interchange.to_gromacs(f"{name}_{size}", hydrogen_mass=3)
+                packed_interchange.to_gromacs(f"{name}_{size}")
             except Exception as e:
                 print(f"Error packing box for {name} with size {size}: {e}")

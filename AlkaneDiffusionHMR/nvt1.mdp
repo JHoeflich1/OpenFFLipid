@@ -1,0 +1,40 @@
+integrator = sd
+dt = 0.001
+nsteps = 1000000 ; 1000 ps / 1 ns
+
+continuation = no
+constraints = h-bonds
+constraint-algorithm = lincs
+lincs-iter = 2
+
+cutoff-scheme = Verlet
+nstxout = 50000 		
+nstvout = 50000 	
+nstfout = 0
+
+nstcomm = 100
+comm_mode = linear
+
+nstlist = 40
+vdwtype = Cut-off
+coulombtype = PME
+coulomb-modifier        = Potential-shift-Verlet
+vdw-modifier            = potential-switch
+ewald-rtol              = 1e-05
+pme_order               = 4        
+fourierspacing          = 0.12   
+; Cut-offs
+rvdw-switch             = 0.8	    
+rcoulomb                = 0.9      
+rcoulomb-switch         = 0
+rvdw                    = 0.9       
+
+tcoupl = no ; tcoupl is ignored for sd integrator, changed from V-rescale to no 
+tc_grps = system
+tau-t = 2 ;changed from 0.1 to 2 while docs say that this is an appropriate value 
+ref-t = 300.0
+
+gen-vel = yes
+gen-temp = 300.0
+pbc = xyz
+DispCorr = EnerPres
