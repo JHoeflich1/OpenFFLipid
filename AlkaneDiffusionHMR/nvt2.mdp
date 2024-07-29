@@ -1,17 +1,17 @@
 integrator = sd
-dt = 0.002
-nsteps = 2500000 ; 5000 ps /5 ns
+dt = 0.004
+nsteps = 1250000 ; 5000 ps / 5 ns
 
 continuation = no
 constraints = h-bonds
 constraint-algorithm = lincs
-lincs-iter = 1
+lincs-iter = 2
 
 cutoff-scheme = Verlet
-nstxout = 250 		;(modified* from 0)
-nstvout = 250 		;(modified* from 0)
+nstxout = 50000 		;(modified* from 0)
+nstvout = 50000 		;(modified* from 0)
 nstfout = 0
-nstxout-compressed = 250 ; 1 ps
+;nstxout-compressed = 5000 ; 10 ps
 
 nstcomm = 100
 comm_mode = linear

@@ -10,7 +10,7 @@ from scipy.optimize import curve_fit
 import subprocess
 
 # load data for DS and Box size
-Ds_df = pd.read_pickle("diffusion_final.pkl")
+Ds_df = pd.read_pickle("DS_final.pkl")
 box = pd.read_csv('box_sizes.csv')
 
 # print(box.head())
@@ -32,7 +32,7 @@ for molecule in box['molecule'].unique():
     DS_data_err = []
     
     for _, row in molecule_data.iterrows(): # iteracte over dataframe rows, returns a series for each row
-        box_size = row['box_length_avg']
+        box_size = row['box_length']
         print(box_size, 'box size')
         mol_size = row['size']
         

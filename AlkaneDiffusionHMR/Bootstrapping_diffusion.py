@@ -46,8 +46,8 @@ def BootstrappingMSD(args):
     plt.savefig(f"AvgMSD_{molecule}_{size}.png")
     plt.clf()  # Clear plot
 
-    def func(a, mymsd): #5000 ps time, 5 ps timestep, 1001 frames 
-        return a * np.linspace(0, 5000, 1001) - mymsd
+    def func(a, mymsd):
+        return a * np.linspace(0, 7000, 701) - mymsd
 
     slope = scipy.optimize.leastsq(func, 0.1, args=avemsd)[0][0]
 
