@@ -16,7 +16,7 @@ def read_and_populate(mol_name, size, tlen):
     df = pd.DataFrame(np.full((len(index), tlen), np.nan), index=index, columns=columns)
     
     for i in range(size):
-        with open(f"msds/msd_{mol_name}_{size}_{i}.xvg") as f:
+        with open(f"msds_test/msd_{mol_name}_{size}_{i}.xvg") as f:
             lines = f.readlines()
         # Read lines and save MSDs to dataframe    
         itv = 0
@@ -30,7 +30,7 @@ def read_and_populate(mol_name, size, tlen):
 
 
 if __name__ == '__main__':
-    molecules = ['water', 'pentane', 'hexane', 'heptane', 'octane', 'decane', 'pentadecane']
+    molecules = ['water']#, 'pentane', 'hexane', 'heptane', 'octane', 'decane', 'pentadecane']
     sizes = [512, 1024, 2048]
     tlen = 1001 # In my MSDs I have 1001 frames at a 5 ps timestep
 
@@ -42,4 +42,4 @@ if __name__ == '__main__':
     pool.join()
 
     msd_df = pd.concat(results)
-    msd_df.to_pickle("msd_data_new.pkl")
+    msd_df.to_pickle("msd_data_new_nopbc_trial2.pkl")
