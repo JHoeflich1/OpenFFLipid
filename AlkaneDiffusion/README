@@ -1,0 +1,8 @@
+AlkaneDiffusionHMR_sd, AlkaneDiffusionHMR_md, and AlkaneDiffusion_md all come from the same initial condition. nvt1_box_*.gro files are 
+used from one equilibration run (ran in folder AlkaneDiffusionHMR_sd. I accidentally deleted the trajectory files but I do have the nvt1_box*
+files as well as the mdps used)
+
+AlkaneDiffusion_sd was run with the same equilibration scripts, however the initial configuration file nvt1_box_*.gro was generated 
+from its own equilibartion files. This simulation has both the nvt1, npt1, npt1_box files. 
+
+TIP3P was run in its own folder

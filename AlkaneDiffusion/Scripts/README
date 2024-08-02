@@ -1,0 +1,42 @@
+Scripts used to analyze the diffusion constants of TIP3P and water
+
+Forcefield used: OpenFF Sage 2.1.0, "openff-2.1.0.offxml"
+Charges on atoms either assigned using NAGL (default) or AM1BCC (specified using *_AM1_* in folder name
+Alkanes tested: Pentane, Hexane, Heptane, Octane, Decane, Pentadecane 
+Equation of motion integrator: either sd or md, *_md_* or _sd_* 
+Temperature: 300k
+Pressure: 1 bar
+
+
+
+Pipeline:
+1. Run buildAlkane.py, buildWater.py to create alkanes and water from smiles string, pack using openFF packmol toolkit, parameterize with interchange + use HMR
+2. Run runAlkanes_equil.py to create .sh run scripts for each simulation in RC account 
+    submit .sh with "for script in *equil1.sh; do sbatch "$script"; done " to run
+3. Run ChangeBoxSize.py to modify box size before production run
+4. Run runAlkances_prod1.py for NVT production run
+    submit .sh with " for script in *_prod1.sh; do sbatch "$script"; done " 
+5. Run runAlkances_prod2.py for NPT production run
+    submit .sh with " for script in *_prod2.sh; do sbatch "$script"; done " 
+6. Run MSD_per_particle.py for each molecule size and each moelcule. Will need to adjust for all molecules 
+7. Run MSDsToDataframe.py to put data into a .pkl files
+8. lookAtPkl.py to check out head of dataframe 
+
+8. Run Bootstrapping_diffusion to get the average Ds and Sterr (computed from 
+Charges on atoms either assigned using NAGL (default) or AM1BCC (specified using *_AM1_* in folder name
+
+Pipeline:
+1. Run buildAlkane.py, buildWater.py to create alkanes and water from smiles string, pack using openFF packmol toolkit, parameterize with interchange
+2. Run runAlkanes_equil.py to create .sh run scripts for each simulation in RC account 
+    submit .sh with "for script in *equil1.sh; do sbatch "$script"; done " to run
+3. Run ChangeBoxSize.py to modify box size before production run
+4. Run runAlkances_prod1.py for NVT production run
+    submit .sh with " for script in *_prod1.sh; do sbatch "$script"; done " 
+5. Run runAlkances_prod2.py for NPT production run
+    submit .sh with " for script in *_prod2.sh; do sbatch "$script"; done " 
+6. Run MSD_per_particle.py for each molecule size and each moelcule. Will need to adjust for all molecules 
+7. Run MSDsToDataframe.py to put data into a .pkl files
+8. lookAtPkl.py to check out head of dataframe 
+9. Run Bootstrapping_diffusion to get the average Ds and Sterr (computed from bootstrapping)
+10. Run Diffusion_fitting.py to calcaulte and plot the diffusion coefficients for different box sizesbootstrapping)
+
