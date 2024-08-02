@@ -8,14 +8,12 @@ Pipeline:
 2. Run runAlkanes_equil.py to create .sh run scripts for each simulation in RC account 
     submit .sh with "for script in *equil1.sh; do sbatch "$script"; done " to run
 3. Run ChangeBoxSize.py to modify box size before production run
-4. Run runAlkances_prod1.py for NVT production run
-    submit .sh with " for script in *_prod1.sh; do sbatch "$script"; done " 
-5. Run runAlkances_prod2.py for NPT production run
-    submit .sh with " for script in *_prod2.sh; do sbatch "$script"; done " 
-6. Run MSD_per_particle.py for each molecule size and each moelcule. Will need to adjust for all molecules 
-7. Run MSDsToDataframe.py to put data into a .pkl files
-8. lookAtPkl.py to check out head of dataframe 
 
+######################################################################
+6. Run runAlkances_nvt.py to create .sh run scripts
+    submit .sh with " for script in *nvt_1.sh; do sbatch "$script"; done " to run NVT
+7. Run MSD_per_particle.py for each molecule size and each moelcule. Will need to adjust for all molecules 
+8. RUn MSDsToDataframe.py
 8. Run Bootstrapping_diffusion to get the average Ds and Sterr (computed from bootstrapping)
 8. Run Diffusion_fitting.py to calcaulte and plot the diffusion coefficients for different box sizes
 9. Create folders for each moelcule and separate files into their molecules 

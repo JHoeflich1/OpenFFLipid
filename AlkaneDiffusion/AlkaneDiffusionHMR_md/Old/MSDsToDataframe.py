@@ -15,7 +15,7 @@ def populateDataframe(molecules, sizes, dataframe):
     for mol_name in molecules:
         for size in sizes:
             for i in range(size):
-                with open(f"msds_PPtest/msd_{mol_name}_{size}_{i}.xvg") as f:
+                with open(f"msds/msd_{mol_name}_{size}_{i}.xvg") as f:
                     lines = f.readlines()
                 #read lines and save msds to dataframe    
                 itv = 0

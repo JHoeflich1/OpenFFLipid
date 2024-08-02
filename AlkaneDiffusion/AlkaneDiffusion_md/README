@@ -1,0 +1,4 @@
+Note that the equilibration of these systems was not performed independently, 
+instead I took the final nvp1_box*.gro files from AlkaneDiffusionHMR_sd run, and started running them with modified mdps. 
+Given that I only want the initial coordiantes from the equilibration runs, I think this should be okay. 
+The box sizes csv file was also pulled from AlkaneDiffusionHMR to be used in future calcualtions. 
