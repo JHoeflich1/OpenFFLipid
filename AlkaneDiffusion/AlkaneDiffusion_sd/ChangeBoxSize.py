@@ -60,8 +60,8 @@ df_densities = pd.DataFrame(columns=['molecule', 'size', 'density_avg', 'density
 for molecule, MW in alkaneMWs.items():
     for size in sizes:
         #what gmx command gives volume?
-        # command_V = f"echo Volume| gmx energy -f npt1_{molecule}_{size}.edr -b {length_b} -e {length_e} -o {molecule}_{size}_V.xvg"
-        # subprocess.run(command_V, shell=True, check=True)
+        command_V = f"echo Volume| gmx energy -f npt1_{molecule}_{size}.edr -b {length_b} -e {length_e} -o {molecule}_{size}_V.xvg"
+        subprocess.run(command_V, shell=True, check=True)
 
         #From the volume, calculate the length of the box 
         V_len = np.loadtxt(f'{molecule}_{size}_V.xvg', comments=['#','@'])

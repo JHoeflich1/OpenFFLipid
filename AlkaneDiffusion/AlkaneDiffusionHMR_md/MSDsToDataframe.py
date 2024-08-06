@@ -30,9 +30,9 @@ def read_and_populate(mol_name, size, tlen):
 
 
 if __name__ == '__main__':
-    molecules = ['water']#, 'pentane', 'hexane', 'heptane', 'octane', 'decane', 'pentadecane']
-    sizes = [512, 1024, 2048, 4096]
-    tlen = 2001 # In my MSDs I have 2001 frames at a 1 ps timestep
+    molecules = ['pentane', 'hexane', 'heptane', 'octane', 'decane', 'pentadecane']
+    sizes = [512, 1024, 2048]
+    tlen = 2001 # In my MSDs I have 1001 frames at a 5 ps timestep
 
     pool = Pool()
     tasks = [(mol_name, size, tlen) for mol_name in molecules for size in sizes]
