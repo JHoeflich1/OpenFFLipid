@@ -8,16 +8,16 @@
 # 3. Fit the result to a line with intercept = 0 and find the slope
 # 4. Divide the slope by 6 
 
-
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy
+import scipy.optimize
 import pandas as pd
-import multiprocessing 
+import multiprocessing
 
 def BootstrappingMSD(args):
     '''Input: molecule and size
-    returns a tuple with final diffusion coefficient and standard error of the diffusion coefficient'''  
+    returns a tuple with final diffusion coefficient and standard error of the diffusion coefficient, as well 
+    as the boostrapped diffusion coefficents to be used to boostrap D_inf'''  
     molecule, size = args
 
     # Extract MSD data in a matrix [particles, tlen]
@@ -26,14 +26,14 @@ def BootstrappingMSD(args):
     matrix = msd_df.loc[(molecule, size)]
     matrix = matrix.to_numpy()  # or matrix.values
     nparticles, length = np.shape(matrix)
-    # print(np.shape(matrix))
+
     # Plot all MSDs
     for i in range(nparticles): 
         plt.plot(matrix[i, :], 'b', alpha=0.02)
     plt.xlabel('frames')
     plt.ylabel('MSD')
     plt.title(f"All MSD for {molecule} {size}")
-    plt.savefig(f"allMSD_{molecule}_{size}.png")
+    # plt.savefig(f"allMSD_{molecule}_{size}.png")
     plt.clf()  # Clear plot
 
     avemsd = np.mean(matrix, axis=0)  # Mean computed across columns
@@ -46,8 +46,8 @@ def BootstrappingMSD(args):
     # plt.savefig(f"AvgMSD_{molecule}_{size}.png")
     plt.clf()  # Clear plot
 
-    def func(a, mymsd): #2000 ps time, 1 ps timestep, 2001 frames 
-        return a * np.linspace(0, 2000, 2001) - mymsd
+    def func(a, mymsd):  # 2000 ps time, 1 ps timestep, 2001 frames 
+        return a * np.linspace(0, 5000, 5001) - mymsd
 
     slope = scipy.optimize.leastsq(func, 0.1, args=avemsd)[0][0]
 
@@ -66,7 +66,7 @@ def BootstrappingMSD(args):
         new_avemsd = np.mean(newmsd_data, axis=0)
         slope = scipy.optimize.leastsq(func, 0.1, args=new_avemsd)[0][0]
         Ds[n] = slope / 6 * 0.01  # Convert to cm^2/s
-    
+
     # Plot bootstrapped MSDs
     plt.plot(avemsd, 'b', alpha=0.1)
     plt.title(f"Bootstrapped MSDs for {molecule} {size}")
@@ -83,16 +83,20 @@ def BootstrappingMSD(args):
 
     print(f"Diffusion for {molecule} {size} is {finalD:.4g} +/- {stderr_boots:.4g} cm^2/s")
 
-    return (molecule, size), finalD, stderr_boots
+    return (molecule, size), finalD, stderr_boots, Ds
 
 
 if __name__ == '__main__':
     molecules = ['water']
     sizes = [512, 1024, 2048, 4096]
 
+    # Create a dataframe to store final Ds and standard deviation
     index = pd.MultiIndex.from_product([molecules, sizes], names=['Molecule', 'Size'])
     DS_final = pd.DataFrame(index=index, columns=['Ds', 'Stderr'])
     DS_final[:] = np.nan
+
+    # Create a dataframe to store all the calculated Ds from bootstrapping to use in bootstrapping D_inf
+    Bootstrapped_Ds = pd.DataFrame(index=index, columns=range(5000))  # 5000 bootstraps performed
 
     # Create a pool of worker processes
     pool = multiprocessing.Pool(multiprocessing.cpu_count())
@@ -108,10 +112,12 @@ if __name__ == '__main__':
 
     # Collect results
     for result in results:
-        (molecule, size), finalD, stderr_boots = result.get()
+        (molecule, size), finalD, stderr_boots, Ds = result.get()
         DS_final.loc[(molecule, size), 'Ds'] = finalD
         DS_final.loc[(molecule, size), 'Stderr'] = stderr_boots
+        Bootstrapped_Ds.loc[(molecule, size), :] = Ds  # Save each bootstrapped D
 
     # Save the final DataFrame to a CSV file
     DS_final.to_csv('diffusion_coefficients.csv')
     DS_final.to_pickle('diffusion_coefficients.pkl')
+    Bootstrapped_Ds.to_pickle('bootstrapped_Ds.pkl')
