@@ -47,7 +47,7 @@ def BootstrappingMSD(args):
     plt.clf()  # Clear plot
 
     def func(a, mymsd):  # 2000 ps time, 1 ps timestep, 2001 frames 
-        return a * np.linspace(0, 2000, 2001) - mymsd
+        return a * np.linspace(0, 5000, 5001) - mymsd
 
     slope = scipy.optimize.leastsq(func, 0.1, args=avemsd)[0][0]
 

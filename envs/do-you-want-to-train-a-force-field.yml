@@ -1,0 +1,17 @@
+name: build-a-force-field
+channels:
+  - conda-forge
+  - psi4
+  - conda-forge/label/libint_dev
+
+dependencies:
+  - python=3.9
+  - openff-toolkit=0.13.2
+  - openff-qcsubmit
+  - openff-bespokefit
+  - qcfractal
+  - psi4
+  - qcportal
+  - pytest
+  - dftd3-python
+

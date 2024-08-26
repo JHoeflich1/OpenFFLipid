@@ -46,11 +46,11 @@ for molecule in box['molecule'].unique():
         # print(f"Molecule: {molecule}, Size: {box_size}, DS: {matrix['Ds']}, Stderr: {matrix['Stderr']}")
     
     # Convert to numpy arrays
-    x_data = np.array(Size_data[:3])
+    x_data = np.array(Size_data[:4])
     print(x_data, "size x data")
-    y_data = np.array(DS_data[:3])
+    y_data = np.array(DS_data[:4])
     print(y_data, "Ds y data")
-    y_err = np.array(DS_data_err[:3])
+    y_err = np.array(DS_data_err[:4])
 
     # Perform curve fitting
     guess = [1.0, 0.0] #initial guess for model
@@ -88,7 +88,7 @@ for molecule in box['molecule'].unique():
     for n in range(n_bootstrapps):
         newi = np.random.randint(0,n_bootstrapps)
         newDS = []  # Initialize for each bootstrap iteration
-        for i in range(3): # because we have 3 different box sizes
+        for i in range(4): # because we have 3 different box sizes
             newDS.append(bootstrap_ds_data.iloc[i, newi])
         y_data_bs = np.array(newDS)
         params_bs, covariance_bs = curve_fit(model, 1 / x_data, y_data_bs, p0=guess) 
