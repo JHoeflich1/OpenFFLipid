@@ -4,7 +4,7 @@ import os
 import multiprocessing
 import glob
 
-def pullLipid(Lipid_name,lipid_gro, lipid_top,pull_atom):
+def pullLipid(Lipid_name, lipid_gro, lipid_top, pull_atom):
     '''
     Runs the gmx pulling command to straighten out the lipid and cleans up generated files.
     
