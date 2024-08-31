@@ -4,7 +4,7 @@ import os
 import multiprocessing
 import glob
 
-def pullLipid(lipid_gro, lipid_top,pull_atom):
+def pullLipid(Lipid_name, lipid_gro, lipid_top, pull_atom):
     '''
     Runs the gmx pulling command to straighten out the lipid and cleans up generated files.
     
@@ -19,10 +19,10 @@ def pullLipid(lipid_gro, lipid_top,pull_atom):
     command_grompp = f"gmx grompp -f scripts/pull.mdp -c {lipid_gro} -p {lipid_top} -n {pull_atom}.ndx -o pull.tpr -maxwarn 1" 
     os.system(command_grompp)
 
-    command_pull = f"gmx mdrun -deffnm pull" 
+    command_pull = "gmx mdrun -deffnm pull" 
     os.system(command_pull)
 
-    command_pdb = f"gmx editconf -f pull.gro -o pulled_lipid.pdb"
+    command_pdb = f"gmx editconf -f pull.gro -o {Lipid_name}.pdb"
     os.system(command_pdb)
 
     # Clean up by deleting all files starting with "pull."
