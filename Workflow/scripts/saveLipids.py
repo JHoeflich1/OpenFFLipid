@@ -23,55 +23,87 @@ def saveInterchange(lipid_name, file_paths):
 class Lipid(object):
     """ Saving lipid parameters """
 
-    def __init__(self, name, headgroup_atom, tailgroup_atom, distance, experimental_volume):
+    def __init__(self, name, headgroup_atom, headgroup_atom_index, tailgroup_atom,tailgroup_atom_index, distance, experimental_density):
 
         self.name = name
-        self.headgoup_atom = headgroup_atom
+        self.headgroup_atom = headgroup_atom
+        self.headgroup_atom_index = headgroup_atom_index
         self.tailgroup_atom = tailgroup_atom
+        self.tailgroup_atom_index = tailgroup_atom_index
         self.distance = distance
-        self.experimental_volume = experimental_volume #this is in g/cm^3
+        self.experimental_density = experimental_density #this is in g/cm^3
+
+import os
+import MDAnalysis as mda
+from MDAnalysis.analysis import distances
 
 def calcLipidLength(lipid, Lipid_name):
-    '''This code accepts a lipid object as well as the pulled lipid pdb
-    This code will use mdanalysis to calcualte the distance between the headgroup and tail group, and add them to the lipid object'''
-    u = mda.Universe(f'/Dictionary/lipids_parameterized/{Lipid_name}/{Lipid_name}.pdb')
-    hg_atom = lipid.headgoup_atom
+    '''Calculate the distance between headgroup and tailgroup atoms of a lipid,
+       and update the lipid object with this information
+       
+       Parameters:
+       lipid: An object representing the lipid with attributes headgroup_atom and tailgroup_atom
+       Lipid_name: The name of the lipid used to locate the corresponding pdb
+    '''
+    cwd = os.getcwd()
+    pdb_path = os.path.join(cwd, 'Dictionary', 'lipids_parameterized', Lipid_name, f'{Lipid_name}.pdb')
+
+    
+    u_pdb = mda.Universe(pdb_path)
+    hg_atom = lipid.headgroup_atom
     tg_atom = lipid.tailgroup_atom
-    head_group = u.select_atoms(f'name {hg_atom}') #select atom in head group, in this case Nitrogen
-    tail_group = u.select_atoms(f'name {tg_atom}') #select atom in tail group, in this case last carbon in unsaturated tail
-    calc_distance = mda.distances.distance_array(head_group.positions,tail_group.positions)
-    lipid.distance = calc_distance
+    head_group = u_pdb.select_atoms(f'name {hg_atom}')
+    tail_group = u_pdb.select_atoms(f'name {tg_atom}')
+    
+    # calculate the distance
+    calc_distance = distances.distance_array(head_group.positions, tail_group.positions)
+    lipid.distance = calc_distance[0][0] 
+    
+    # write in the atom index
+    lipid.headgroup_atom_index = head_group[0].index 
+    lipid.tailgroup_atom_index = tail_group[0].index 
 
 
-def lipid_to_dict(lipid):
+def lipidToDict(lipid):
     return {
         'Name': lipid.name,
-        'Volume': lipid.volume,
         'Headgroup Atom': lipid.headgroup_atom,
+        'Headgroup Atom Index': lipid.headgroup_atom_index,
         'Tailgroup Atom': lipid.tailgroup_atom,
+        'Tailgroup Atom Index': lipid.tailgroup_atom_index,
+        'HG/TG distance': lipid.distance,
         'Experimental Density': lipid.experimental_density
     }
 
-def load_existing_data(file_path):
-    if os.path.exists(file_path):
-        return pd.read_csv(file_path)
+folder_path = 'Dictionary'
+csv_file_name = 'PulledLipid.csv'
+csv_file_path = os.path.join(folder_path, csv_file_name)
+
+def loadExistingData():
+    """Load existing data from the CSV file or create an empty DataFrame with specified columns."""
+    if os.path.exists(csv_file_path):
+        return pd.read_csv(csv_file_path)
     else:
         return pd.DataFrame(columns=['Name', 'Volume', 'Headgroup Atom', 'Tailgroup Atom', 'Experimental Density'])
 
-def save_lipid_to_csv(lipid, file_path):
+
+def saveLipidCsv(lipid):
+    """Save a lipid to a CSV file, appending it if it doesn't already exist."""
     # Load existing data
-    df = load_existing_data(file_path)
+    df = loadExistingData()
     
     # Convert lipid to dictionary
-    lipid_dict = lipid_to_dict(lipid)
+    lipid_dict = lipidToDict(lipid)
     
-    # Check if the lipid already exists in the DataFrame
+    # Does lipid exist in dataframe
     if lipid_dict['Name'] not in df['Name'].values:
-        # Append new lipid data
-        df = df.append(lipid_dict, ignore_index=True)
+        new_df = pd.DataFrame([lipid_dict])
         
-        # Save updated DataFrame to CSV
-        df.to_csv(file_path, index=False)
+        df = pd.concat([df, new_df], ignore_index=True)
+        
+        # Save to csv if not already in there
+        df.to_csv(csv_file_path, index=False)
         print(f"Lipid '{lipid.name}' saved to CSV.")
     else:
         print(f"Lipid '{lipid.name}' already exists in CSV.")
+
