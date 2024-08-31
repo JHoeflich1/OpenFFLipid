@@ -1,0 +1,35 @@
+tolerance 2.000000
+filetype pdb
+output packmol_output.pdb
+
+structure POPC.pdb
+  number 64
+  inside box 0. 0. 0. 67.88 67.88 38.25
+  atoms 52
+    below plane 0. 0. 1. 6.38
+  end atoms
+  atoms 6
+    over plane 0. 0. 1. 25.50
+  end atoms
+end structure
+
+structure POPC.pdb
+  number 64
+  inside box 0. 0. -38.25 67.88 67.88 0.
+  atoms 52
+    over plane 0. 0. 1. -6.38
+  end atoms
+  atoms 6
+    below plane 0. 0. 1. -25.50
+  end atoms
+end structure
+
+structure TIP3P.pdb
+  number 2560
+  inside box 0. 0. 38.25 67.88 67.88 58.25
+end structure
+
+structure TIP3P.pdb
+  number 2560
+  inside box 0. 0. -58.25 67.88 67.88 -38.25
+end structure
