@@ -19,6 +19,7 @@ def saveInterchange(lipid_name, file_paths):
         file_name = os.path.basename(file_path)
         destination_path = os.path.join(target_directory, file_name)
         shutil.copy(file_path, destination_path)
+        print(f'{file_path} saved to {destination_path}')
 
 class Lipid(object):
     """ Saving lipid parameters """
@@ -50,6 +51,10 @@ def calcLipidLength(lipid, Lipid_name):
 
     
     u_pdb = mda.Universe(pdb_path)
+
+    for atom in u_pdb.atoms:
+        print(f"Atom: {atom.name}, Element: {atom.element}")
+
     hg_atom = lipid.headgroup_atom
     tg_atom = lipid.tailgroup_atom
     head_group = u_pdb.select_atoms(f'name {hg_atom}')
@@ -103,7 +108,7 @@ def saveLipidCsv(lipid):
         
         # Save to csv if not already in there
         df.to_csv(csv_file_path, index=False)
-        print(f"Lipid '{lipid.name}' saved to CSV.")
+        print(f"Lipid '{lipid.name}' saved to CSV location: {csv_file_path}.")
     else:
-        print(f"Lipid '{lipid.name}' already exists in CSV.")
+        print(f"Lipid '{lipid.name}' already exists in CSV location: {csv_file_path}")
 
