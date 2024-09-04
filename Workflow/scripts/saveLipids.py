@@ -49,9 +49,8 @@ def calcLipidLength(lipid, Lipid_name):
     cwd = os.getcwd()
     pdb_path = os.path.join(cwd, 'Dictionary', 'lipids_parameterized', Lipid_name, f'{Lipid_name}.pdb')
 
-    
+    ##getting an error with MDAnalysis 
     u_pdb = mda.Universe(pdb_path)
-
     for atom in u_pdb.atoms:
         print(f"Atom: {atom.name}, Element: {atom.element}")
 
