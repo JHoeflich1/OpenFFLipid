@@ -2,16 +2,16 @@
 ;	File 'mdout.mdp' was generated
 ;	By user: julianne (1004)
 ;	On host: torreys-peak
-;	At date: Tue Sep  3 16:41:56 2024
+;	At date: Tue Sep  3 20:18:32 2024
 ;
 ;	Created by:
 ;	                     :-) GROMACS - gmx grompp, 2023.1 (-:
 ;	
 ;	Executable:   /home/julianne/pkgs/gromacs-2023.1/bin/gmx
 ;	Data prefix:  /home/julianne/pkgs/gromacs-2023.1
-;	Working dir:  /media/julianne/DATA/Lipids/OpenFFLipid/Workflow
+;	Working dir:  /media/julianne/DATA/Lipids/OpenFFLipid/Workflow/scripts
 ;	Command line:
-;	  gmx grompp -f scripts/pull.mdp -c POPC.gro -p POPC.top -n N1x.ndx -o pull.tpr -maxwarn 1
+;	  gmx grompp -f runPull.mdp -c POPC.gro -p POPC.top -n N1x.ndx -o pull.tpr -maxwarn 1
 
 ; VARIOUS PREPROCESSING OPTIONS
 ; Preprocessor information: use cpp syntax.
@@ -171,7 +171,7 @@ annealing-temp           =
 ; GENERATE VELOCITIES FOR STARTUP RUN
 gen-vel                  = yes
 gen-temp                 = 300.0
-gen-seed                 = 2107866864
+gen-seed                 = 1971218939
 
 ; OPTIONS FOR BONDS    
 constraints              = h-bonds

@@ -1,4 +1,4 @@
-layer,acronym,id,Structure,pull ;update
+layer,acronym,id,Structure,pull
 HG,PA,hg,O([P@@]([O-])(O)(=O)),P1x
 HG,PC,hg,O([P@@]([O-])(OCC[N+](C)(C)C)(=O)),N1x
 HG,PE,hg,O([P@@]([O-])(OCC[NH3+])(=O)),N1x
