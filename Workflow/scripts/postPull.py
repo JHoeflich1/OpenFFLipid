@@ -18,7 +18,7 @@ def print_pulled_lipids():
     straightened out lipids that are optimized for packing in packmol'''
     cwd = os.getcwd()
     parent_directory = os.path.dirname(cwd)
-    target_directory = os.path.join(parent_directory, 'Dictionary', 'PulledLipid.csv')
+    target_directory = os.path.join(parent_directory, 'Workflow', 'Dictionary', 'PulledLipid.csv')
     
     pulled_lib = pd.read_csv(target_directory)
 
@@ -75,7 +75,7 @@ def pull_new_lipid(Lipid_name, pull_atom):
         command_ndx = f"gmx make_ndx -f {Lipid_name}.gro -o {pull_atom}.ndx"
         os.system(f"echo 'a {pull_atom}\nname 3 pull_atom\nq\n' | {command_ndx}")
 
-        command_grompp = f"gmx grompp -f runPull.mdp -c {Lipid_name}.gro -p {Lipid_name}.top -n {pull_atom}.ndx -o pull.tpr -maxwarn 1"
+        command_grompp = f"gmx grompp -f scripts/runPull.mdp -c {Lipid_name}.gro -p {Lipid_name}.top -n {pull_atom}.ndx -o pull.tpr -maxwarn 2"
         subprocess.run(command_grompp, shell=True)
 
         command_pull = "gmx mdrun -deffnm pull"
