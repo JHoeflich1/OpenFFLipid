@@ -17,9 +17,11 @@ If the lipid you wish to simulate is not in the lipid library, look at section b
 'python scripts/packmol.py _build_input_file -ln POPC POPE -lc 64 64 -s TIP3P -sc 1000 -t 2' use --help for detailed list on flags
 This script returns a config.json file that stores relevant data, and a packmol input file (default packmol_input.inp) that contains the packing constraints for your system. 
 
+
 3. Initiate packmol and parameterize your system:
 'python scripts/packmol.py runPackmol -i packmol_input.inp'
-Parameterize your system with HMR is default, if no HMR is desired, use flag -h False. This produces files named 'bilayer.gro' and 'biayer.top'. It is recommended to visualize this structure in VMD or another molecular visualization software before running simulations
+Parameterize your system with HMR is default, if no HMR is desired, use flag -h False. This produces files named 'bilayer.gro' and 'biayer.top'. It is recommended to visualize this structure in VMD or another molecular visualization software before running simulations.
+For a 128 lipid system this shoudl take approx 5 minutes
 
 4. Runnuing molecular dynamics simulations:
 It is not recommended to modify equilibration steps. If necessary, proceed with caution. 

@@ -1,0 +1,14 @@
+name: openff_workflow
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - openff-toolkit
+  - openff-interchange
+  - openff-nagl
+  - mdtraj
+  - mdanalysis
+  - pandas
+  - numpy
+  - rdkit
+  - typing-extensions
