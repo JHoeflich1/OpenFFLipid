@@ -2,6 +2,8 @@ import os
 import shutil
 import pandas as pd
 import MDAnalysis as mda
+from MDAnalysis.analysis import distances
+
 
 def saveInterchange(lipid_name, file_paths):
     '''This function take two inputs, the lipid name and the file paths that you want to save to the Lipids_parameterized dictionary 
@@ -34,10 +36,6 @@ class Lipid(object):
         self.distance = distance
         self.experimental_density = experimental_density #this is in g/cm^3
 
-import os
-import MDAnalysis as mda
-from MDAnalysis.analysis import distances
-
 def calcLipidLength(lipid, Lipid_name):
     '''Calculate the distance between headgroup and tailgroup atoms of a lipid,
        and update the lipid object with this information
@@ -48,11 +46,12 @@ def calcLipidLength(lipid, Lipid_name):
     '''
     cwd = os.getcwd()
     pdb_path = os.path.join(cwd, 'Dictionary', 'lipids_parameterized', Lipid_name, f'{Lipid_name}.pdb')
+    print(pdb_path)
 
     ##getting an error with MDAnalysis 
     u_pdb = mda.Universe(pdb_path)
-    for atom in u_pdb.atoms:
-        print(f"Atom: {atom.name}, Element: {atom.element}")
+    # for atom in u_pdb.atoms:
+    #     print(f"Atom: {atom.name}, Element: {atom.element}")
 
     hg_atom = lipid.headgroup_atom
     tg_atom = lipid.tailgroup_atom
