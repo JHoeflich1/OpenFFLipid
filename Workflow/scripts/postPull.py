@@ -28,7 +28,7 @@ def print_pulled_lipids():
 
 
 
-def parameterize_new_lipid(lipid_smiles, lipid_name):
+def parameterize_new_lipid(lipid_name, lipid_smiles):
     ''' Parameterize a molecule object with openff Interchange
     Inputs:
     lipid: a smiles string 
@@ -166,20 +166,23 @@ def lipidToDict(lipid):
         'Experimental Density': lipid.experimental_density
     }
 
-def loadExistingData(parent_directory):
+def loadExistingData(cwd):
     """Load existing data from the CSV file or create an empty DataFrame with specified columns."""
-    csv_file_path = os.path.join(parent_directory, 'Dictionary', 'PulledLipid.csv')
+    csv_file_path = os.path.join(cwd, 'Dictionary', 'PulledLipid.csv')
 
     if os.path.exists(csv_file_path):
-        return pd.read_csv(csv_file_path), csv_file_path
+        df = pd.read_csv(csv_file_path)
     else:
-        return pd.DataFrame(columns=['Name', 'Volume', 'Headgroup Atom', 'Tailgroup Atom', 'Experimental Density'])
+        # Create an empty DataFrame with specified columns if the file does not exist
+        df = pd.DataFrame(columns=['Name', 'Volume', 'Headgroup Atom', 'Tailgroup Atom', 'Experimental Density'])
+    
+    return df, csv_file_path  # Ensure both values are returned consistently
 
 
-def saveLipidCsv(lipid, parent_directory):
+def saveLipidCsv(lipid, cwd):
     """Save a lipid to a CSV file, appending it if it doesn't already exist."""
     # Load existing data
-    df, csv_file_path = loadExistingData(parent_directory)
+    df, csv_file_path = loadExistingData(cwd)
     
     # Convert lipid to dictionary
     lipid_dict = lipidToDict(lipid)
@@ -196,21 +199,21 @@ def saveLipidCsv(lipid, parent_directory):
     else:
         print(f"Lipid '{lipid.name}' already exists in CSV location: {csv_file_path}")
 
-def add_new_lipid(lipid_name, lipid_smiles, lipid_headgroup, lipid_tailgroup):
+def add_new_lipid(lipid_name, lipid_headgroup, lipid_tailgroup):
     """This function is meant to allow the user to add their own lipid smiles strings.
     It takes in a unique lipid, pulls it and saves it to the lipid dictionry"""
     start_time = time.time() 
 
     cwd = os.getcwd()
-    parent_directory = os.path.dirname(cwd)
+    # parent_directory = os.path.dirname(cwd)
 
     #create .top file and .gro file to be pulled
-    parameterize_new_lipid(lipid_smiles, lipid_name)
+    # parameterize_new_lipid(lipid_smiles, lipid_name)
     pull_new_lipid(lipid_name, lipid_headgroup)
     
     # #save parameterized top file and pulled lipid coordinate file
     file_paths = [f'{lipid_name}.pdb', f'{lipid_name}.top'] 
-    saveInterchange(lipid_name, file_paths, parent_directory)
+    saveInterchange(lipid_name, file_paths, cwd)
 
     #Now I want to import a lipid object and calculate the distance and 
     lipid = Lipid(
@@ -224,15 +227,15 @@ def add_new_lipid(lipid_name, lipid_smiles, lipid_headgroup, lipid_tailgroup):
 )
 
     # Calculate lipid length (distance between headgroup and tailgroup)
-    calcLipidLength(lipid, lipid_name, parent_directory)
+    calcLipidLength(lipid, lipid_name, cwd)
 
     # Save the lipid to the CSV file with all its corresponding information
-    saveLipidCsv(lipid, parent_directory)
+    saveLipidCsv(lipid, cwd)
 
     #delete the files created in scripts folder
-    files_to_delete = glob.glob(f'{lipid_name}.*')
-    for file in files_to_delete:
-        os.remove(file)
+    # files_to_delete = glob.glob(f'{lipid_name}.*')
+    # for file in files_to_delete:
+    #     os.remove(file)
 
 
     end_time = time.time()  # End timing
@@ -259,7 +262,7 @@ if __name__ == '__main__':
         if args.lipidname and args.lipidsmiles:
             parameterize_new_lipid(args.lipidname, args.lipidsmiles)
     elif args.command == 'add_new_lipid':
-        if args.lipidname and args.lipidsmiles and args.headgroup and args.tailgroup:
-            add_new_lipid(args.lipidname, args.lipidsmiles, args.headgroup, args.tailgroup)
+        if args.lipidname and args.headgroup and args.tailgroup:
+            add_new_lipid(args.lipidname, args.headgroup, args.tailgroup)
         else:
             print("Error: Missing required arguments for add_new_lipid.")
