@@ -16,19 +16,18 @@ tail_ids = ['sn1', 'sn2']
 sterol_ids = ['st']
 
 
-multi_index_hg = pd.MultiIndex.from_product([head_acronyms, head_ids], names=["acronym", "head_id"])
-multi_index_tg = pd.MultiIndex.from_product([tail_acronyms, tail_ids], names=["acronym", "tail_id"])
-multi_index_sterol = pd.MultiIndex.from_product([sterol_acronyms, sterol_ids], names=["acronym", 'sterol_id'])
+# multi_index_hg = pd.MultiIndex.from_product([head_acronyms, head_ids], names=["acronym", "head_id"])
+# multi_index_tg = pd.MultiIndex.from_product([tail_acronyms, tail_ids], names=["acronym", "tail_id"])
+# multi_index_sterol = pd.MultiIndex.from_product([sterol_acronyms, sterol_ids], names=["acronym", 'sterol_id'])
 
 index_hg = pd.MultiIndex.from_product([['HG'], head_acronyms, head_ids], names=["layer", "acronym", "id"])
 index_tg = pd.MultiIndex.from_product([['TG'], tail_acronyms, tail_ids], names=["layer", "acronym", "id"])
 index_sterol = pd.MultiIndex.from_product([['Sterol'],sterol_acronyms, sterol_ids], names=["layer", "acronym", "id"])
+
 full_index = index_hg.append(index_tg).append(index_sterol)
 # full_index = comb_index.append(index_sterol)
-df = pd.DataFrame(index=full_index)#, columns=['Smiles'])
+df = pd.DataFrame(index=full_index, columns=['Structure', 'pull']).sort_index()
 
-# Ensure the index is sorted before setting values
-df = df.sort_index()
 
 # add smiles strings
 df.at[('HG', 'PA', 'hg'), 'Structure'] = 'O([P@@]([O-])(O)(=O))'       # PA
@@ -74,6 +73,7 @@ df.at[('TG', 'DO', 'sn1'), 'Structure'] = 'CCCCCCC\C=C/CCCCCCCC' #if written lik
 df.at[('TG', 'DO', 'sn2'), 'Structure'] = 'CCCCCCC\C=C/CCCCCCCC'
 #add sterols
 df.at[('Sterol', 'cholesterol', 'st'), 'Structure'] = 'C[C@H](CCCC(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C'
+df.at[('Sterol', 'cholesterol', 'st'), 'pull'] = 'O1x'
 df.at[('Sterol', 'ergosterol', 'st'), 'Structure'] = 'C[C@H](/C=C/[C@H](C)C(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3C2=CC=C4[C@@]3(CC[C@@H](C4)O)C)C'
 df.at[('Sterol', 'beta-Sitosterol', 'st'), 'Structure'] = 'CC[C@H](CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C'
 df.at[('Sterol', 'stigmasterol', 'st'), 'Structure'] = 'CC[C@H](/C=C/[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C'
@@ -86,4 +86,4 @@ df.at[('Sterol', 'testosterone', 'st'), 'Structure'] = 'C[C@]12CC[C@H]3[C@H]([C@
 df.at[('Sterol', 'estradiol', 'st'), 'Structure'] = 'C[C@]12CC[C@H]3[C@H]([C@@H]1CC[C@@H]2O)CCC4=C3C=CC(=C4)O'
 
 os.makedirs('Dictionary', exist_ok=True)
-df.to_csv("Dictionary/LipidLibrary.csv")
+df.to_csv("../Dictionary/LipidLibrary.csv")

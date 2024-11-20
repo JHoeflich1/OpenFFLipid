@@ -29,7 +29,8 @@ def makeLipidSmiles(Lipid, df):
         if Lipid not in df[df.index.get_level_values('layer') == 'Sterol'].index.get_level_values('acronym'):
             raise ValueError(f"Sterol {Lipid} not found in the dictionary.")
         Sterol_smiles = df.loc[('Sterol', Lipid, 'st'), 'Structure']
-        return Sterol_smiles
+        Sterol_hg = df.loc[('Sterol', Lipid, 'st'), 'pull']
+        return Sterol_smiles, Sterol_hg 
     
     Lipid_sn12 = Lipid[:2]
     Lipid_hg = Lipid[2:]

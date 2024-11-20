@@ -26,7 +26,7 @@ def saveInterchange(lipid_name, file_paths):
 class Lipid(object):
     """ Saving lipid parameters """
 
-    def __init__(self, name, headgroup_atom, headgroup_atom_index, tailgroup_atom,tailgroup_atom_index, distance, experimental_density):
+    def __init__(self, name, headgroup_atom, headgroup_atom_index, tailgroup_atom,tailgroup_atom_index, distance, experimental_density, smiles_string):
 
         self.name = name
         self.headgroup_atom = headgroup_atom
@@ -35,6 +35,7 @@ class Lipid(object):
         self.tailgroup_atom_index = tailgroup_atom_index
         self.distance = distance
         self.experimental_density = experimental_density #this is in g/cm^3
+        self.smiles_string = smiles_string
 
 def calcLipidLength(lipid, Lipid_name):
     '''Calculate the distance between headgroup and tailgroup atoms of a lipid,
@@ -63,8 +64,9 @@ def calcLipidLength(lipid, Lipid_name):
     lipid.distance = calc_distance[0][0] 
     
     # write in the atom index
-    lipid.headgroup_atom_index = head_group[0].index 
-    lipid.tailgroup_atom_index = tail_group[0].index 
+    # # Adjusting for 1-based indexing by adding 1
+    lipid.headgroup_atom_index = head_group[0].index  + 1
+    lipid.tailgroup_atom_index = tail_group[0].index  + 1
 
 
 def lipidToDict(lipid):
@@ -75,7 +77,8 @@ def lipidToDict(lipid):
         'Tailgroup Atom': lipid.tailgroup_atom,
         'Tailgroup Atom Index': lipid.tailgroup_atom_index,
         'HG/TG distance': lipid.distance,
-        'Experimental Density': lipid.experimental_density
+        'Experimental Density': lipid.experimental_density,
+        'Lipid Smiles String' : lipid.smiles_string
     }
 
 folder_path = 'Dictionary'

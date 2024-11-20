@@ -5,12 +5,14 @@ import numpy as np
 import mdtraj#type:ignore
 import os
 import shutil 
+import time
 import subprocess
 from typing import List
 import json
 from datetime import datetime
 from openff.interchange import Interchange#type:ignore
 from openff.toolkit import ForceField, Molecule, Topology#type:ignore
+from openff.toolkit.utils.nagl_wrapper import NAGLToolkitWrapper
 
 def init_json(file_name):
     ''' Initiates a json structure and writes it to a file. This will be carried throughout the 
@@ -176,9 +178,9 @@ def _build_input_file(
 
 
     ############################
-    # I am assuming that lipid area in x-y space is 5 angstoms by 5 agstoms to give
+    # I am assuming that lipid area in x-y space is 7 angstoms by 7 agstoms to give
     # room with packing.
-    n = 6
+    n = 7
 
     for lipid_name, lipid_count in zip(lipid_file_names, lipid_counts):
         # Find the corresponding row in the lipid library
@@ -228,7 +230,7 @@ def _build_input_file(
         # Add the section of the molecule to solvate if provided.
         density_water = 1e-21 / 18.01  # g/nm^3 / (g/mol) = mol/nm^3
         water_per_layer = solvent_count / 2
-        water_volume_per_layer = water_per_layer / (density_water * 6.02e23) * 3 * 1000  # molecules/[(mol/nm^3)*(molecules/mol) *scale volume by 3 to allow for wiggle room * (angstrom^3/nm^3) = A^3
+        water_volume_per_layer = water_per_layer / (density_water * 6.02e23) * 3.5 * 1000  # molecules/[(mol/nm^3)*(molecules/mol) *scale volume by 3 to allow for wiggle room * (angstrom^3/nm^3) = A^3
         z_distance_water = water_volume_per_layer / (np.sqrt(sum(lipid_counts)) * n) ** 2
 
         input_lines.extend([
@@ -259,9 +261,16 @@ def _build_input_file(
     with open(packmol_file_name, "w") as file_handle:
         file_handle.write(packmol_input)
 
+    lipid_smiles_strings = []
+    for lipid in lipid_file_names:
+        lipid_info = lipid_library[lipid_library['Name'] == lipid]
+        smiles = lipid_info['Lipid Smiles String'].values[0]
+        lipid_smiles_strings.append(smiles)
+
     #save all iumportant information to json file
     new_parameters_1 = {
         "lipid_file_names": lipid_file_names,
+        "lipid_smiles_strings": lipid_smiles_strings,
         "lipid counts": lipid_counts,
         "solvent": solvent,
         "solvent_count": solvent_count,
@@ -296,6 +305,12 @@ def runPackmol(
 
     command_print = 'tail -n 28 packmol_output.log'
     subprocess.run(command_print, shell=True)
+    cwd = os.getcwd()
+    print(cwd)
+
+
+
+    start_time = time.time() 
 
     #we can also sppecify if you want to parameterize your bilayer
     if parameterize == True:
@@ -311,27 +326,60 @@ def runPackmol(
         output_packmol = config['parameters']['packmol output file']
 
 
+        lipid_library = pd.read_csv(f'Dictionary/PulledLipid.csv') #load in the lipid library
+
+        forcefield = ForceField(force_field)
+
         lipid_molecules = []
         for lipid in lipids:
-            path = f'{lipid}.pdb'
-            molecule = Molecule.from_file(path)  # Load the molecule from the PDB file
+
+
+            #I think if I individually parameterize each lipid and save cahrges + parameters to lipid_molecules list
+            # I think it will speed up the full bilayer parameterization 
+            lipid_info = lipid_library[lipid_library['Name'] == lipid]
+            smiles =lipid_info['Lipid Smiles String'].values[0]
+            # path = f'{lipid}.top'
+
+            molecule = Molecule.from_smiles(smiles)  # Load the molecule from smiles
+            molecule.assign_partial_charges("openff-gnn-am1bcc-0.1.0-rc.3.pt", toolkit_registry=NAGLToolkitWrapper())
+            
+            molecule.name = lipid
+            for i, atom in enumerate(molecule.atoms, 0):
+                atom.metadata["residue_name"] = lipid
+            molecule.generate_unique_atom_names() 
+            topology = Topology.from_molecules([molecule])
+
+            interchange = Interchange.from_smirnoff(
+                force_field=forcefield,
+                topology=topology,
+                charge_from_molecules = [molecule]
+            )
+            interchange  
             lipid_molecules.append(molecule) # Load the molecule from the PDB file
 
         total_lipid_molecules = [lipid_molecules[i] for i, count in enumerate(number_of_lipids) for _ in range(count)]
-        
         # Load solvent molecule
         solvent_path = f'{solvent}.pdb'
         solvent_molecule = Molecule.from_file(solvent_path)
 
         total_molecules = total_lipid_molecules + number_of_solvent * [solvent_molecule]
-
         topology = Topology.from_molecules(total_molecules)
+        print(f"Number of atoms in topology: {topology.n_atoms}")
+        print(f"Total number of lipid molecules: {len(total_lipid_molecules)}")
+
+        print(f"Expected shape: {(topology.n_atoms, 3)}")
+   
         # Packmol bilayer to parametrize
         path = mdtraj.load(output_packmol)
+        print(f"Shape of generated positions: {path.xyz[0].shape}")
+
         topology.set_positions(path.xyz[0] * unit.nanometer)
+
+
+
+
         topology.box_vectors =  np.array(dims)*0.1 * unit.nanometer #convert from angstoms (packmol default) to openff default nm
 
-        forcefield = ForceField(force_field)
 
         interchange = Interchange.from_smirnoff(
             force_field=forcefield,
@@ -348,6 +396,11 @@ def runPackmol(
             print("Files parameterized and saved as bilayer.top and bilayer.gro. System not configured for HMR")
     else:
         print("System is not parameterized. Output= packmol.output.pdb")
+
+    end_time = time.time()  # End timing
+    elapsed_time = end_time - start_time
+
+    print(f"Total time to parameterize system: {elapsed_time:.2f} seconds")
 
 if __name__ == '__main__':
     import argparse
@@ -369,7 +422,7 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--fileinput', type=str, default = 'packmol_input.inp', help= 'Input file for Packmol (default: packmol_input.inp)')
     parser.add_argument('-p', '--parameterize', type=bool, default='True',help='Parameterize with OpenFF')
     parser.add_argument('-f', '--forcefield', type=str, default='openff-2.2.0.offxml',help='Parameterize with OpenFF force field, default openff-2.2.0.offxml')
-    parser.add_argument('-hr', '--hmr', type=bool, default='True',help='Parameterize with hydrogen mass repartitioning. False=no HMR')
+    parser.add_argument('-hr', '--hmr', type=bool, default='False',help='Parameterize with hydrogen mass repartitioning. False=no HMR')
 
     args = parser.parse_args()
 
