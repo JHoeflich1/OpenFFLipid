@@ -2,8 +2,7 @@ This folder holds scripts related to setting up simulations and calculating heat
 
 Liquid simulations have default 1000 molecules, while gas simuations have only 1 molecule
 
-Everything run standard temperature and pressure (liquid)
-
+Simulations at 300K, 1 bar (liquid), vacuum (gas)
 
 Steps how this was run:
 
