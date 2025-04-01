@@ -15,7 +15,7 @@ alkaneMWs = {
     'hexane': 86.17, 
     'heptane':  100.21, 
     'octane':  114.23, 
-    'decane': 152.29, 
+    'decane': 142.29, 
     'pentadecane':  212.42, 
     'water':  18.01
 }
